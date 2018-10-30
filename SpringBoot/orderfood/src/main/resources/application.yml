@@ -1,0 +1,15 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/wechat?characterEncoding=utf8&useSSL=true
+    username: root
+    password: xudusheng
+  jpa:
+    show-sql: true
+
+logging:
+  pattern:
+    console: "%d - %msg%n"
