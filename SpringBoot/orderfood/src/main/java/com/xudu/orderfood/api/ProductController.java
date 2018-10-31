@@ -7,6 +7,9 @@ import com.xudu.orderfood.dataobject.ProductCategory;
 import com.xudu.orderfood.dataobject.ProductInfo;
 import com.xudu.orderfood.service.imp.CategoryServiceImp;
 import com.xudu.orderfood.service.imp.ProductServiceImp;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -63,6 +66,17 @@ public class ProductController {
         }
 
         return ResponseObj.SUCEESS(resultData);
+    }
+
+
+
+
+    // 读取的地址
+    private final static String URL_ADDRESS = "http://blog.csdn.net/je_ge?viewmode=contents";
+    @GetMapping(value = "/crawler")
+    public Elements getLinks() throws Exception {
+        Document document = Jsoup.connect(URL_ADDRESS).userAgent("iOS/12.0.1").get();
+        return document.select("h1 a");
     }
 
 }
