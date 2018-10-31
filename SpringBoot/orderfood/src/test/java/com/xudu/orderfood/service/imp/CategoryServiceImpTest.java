@@ -49,9 +49,24 @@ public class CategoryServiceImpTest {
     @Test
     public void save() {
         ProductCategory productCategory = new ProductCategory();
-        productCategory.setCategoryName("男士专享");
-        productCategory.setCategoryType(11);
+        productCategory.setCategoryName("日本料理");
+        productCategory.setCategoryType(2);
         serviceImp.save(productCategory);
 
+        productCategory = new ProductCategory();
+        productCategory.setCategoryName("甜点饮品");
+        productCategory.setCategoryType(3);
+        serviceImp.save(productCategory);
+
+        productCategory = new ProductCategory();
+        productCategory.setCategoryName("小吃快餐");
+        productCategory.setCategoryType(4);
+        serviceImp.save(productCategory);
+
+
+        productCategory = new ProductCategory();
+        productCategory.setCategoryName("香锅烤鱼");
+        productCategory.setCategoryType(5);
+        serviceImp.save(productCategory);
     }
 }

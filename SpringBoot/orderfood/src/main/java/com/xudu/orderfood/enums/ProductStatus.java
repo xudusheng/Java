@@ -1,12 +1,13 @@
 package com.xudu.orderfood.enums;
 
 
+import lombok.Data;
 import lombok.Getter;
 
 @Getter
 public enum ProductStatus {
-    UP(0, "在架"),
-    DOWN(1, "下架"),
+    UP(1, "已上架"),
+    DOWN(0, "已下架")
     ;
 
 
@@ -17,4 +18,5 @@ public enum ProductStatus {
         this.code = code;
         this.message = message;
     }
+
 }

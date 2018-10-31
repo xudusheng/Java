@@ -2,7 +2,6 @@ package com.xudu.orderfood.dataobject;
 
 
 import lombok.Data;
-import lombok.Setter;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

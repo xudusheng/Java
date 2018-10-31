@@ -6,15 +6,14 @@ import sun.jvm.hotspot.debugger.Page;
 
 import java.util.List;
 
+
+
 public interface ProductService {
 
     ProductInfo findByProductId(String productId);
 
     /*查询所有上架商品*/
     List<ProductInfo> findAllProductShelf();
-
-    /*分页查询上架商品*/
-//    Page findProductShelf(PageRequest pageable);
 
     /*添加商品*/
     ProductInfo save(ProductInfo productInfo);

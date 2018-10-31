@@ -28,11 +28,6 @@ public class ProductServiceImp implements ProductService {
         return productInfoRepository.findAllByProductStatus(ProductStatus.UP.getCode());
     }
 
-//    @Override
-//    public Page findProductShelf(PageRequest pageable) {
-//        return (Page) productInfoRepository.findAll(pageable);
-//    }
-
     @Override
     public ProductInfo save(ProductInfo productInfo) {
         return productInfoRepository.save(productInfo);

@@ -41,6 +41,7 @@ public class ProductServiceImpTest {
 //        Assert.assertNotEquals(0, pageInfo.getTotalPages());
 //    }
 
+    @Test
     public void save() {
         ProductInfo productInfo = new ProductInfo();
         productInfo.setProductId("002");
@@ -51,8 +52,19 @@ public class ProductServiceImpTest {
         productInfo.setProductIcon("");
         productInfo.setProductStatus(1);
         productInfo.setCategoryType(2);
+        productService.save(productInfo);
 
+        productInfo = new ProductInfo();
+        productInfo.setProductId("001");
+        productInfo.setProductName("兰州拉面");
+        productInfo.setProductPrice(new BigDecimal(11.2));
+        productInfo.setProductStock(100);
+        productInfo.setProductDescription("一碗兰州拉面");
+        productInfo.setProductIcon("");
+        productInfo.setProductStatus(1);
+        productInfo.setCategoryType(2);
         ProductInfo result = productService.save(productInfo);
+
         Assert.assertEquals("002", result.getProductId());
     }
 }
