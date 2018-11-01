@@ -4,6 +4,7 @@ package com.xudu.ihappy.api;
 import com.xudu.ihappy.Util.VideoUtil;
 import com.xudu.ihappy.api.responseobj.ResponseObj;
 import com.xudu.ihappy.objects.Video;
+import com.xudu.ihappy.services.EpisodeService;
 import com.xudu.ihappy.services.VideoService;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
@@ -26,7 +27,7 @@ public class VideoController {
 
     @Autowired
     private VideoService videoService;
-
+    private EpisodeService episodeService;
 
     /*根据类型返回数组*/
     @GetMapping(value = "/videolist")
@@ -43,16 +44,24 @@ public class VideoController {
     }
 
 
-    // 读取的地址
-    private final static String ROOT_URL_ADDRESS = "http://www.74zu.com";
+    /*爬取该类型下的所有视频*/
+    @GetMapping(value = "/crawler/all")
+    public ResponseObj crawlerAll(@RequestParam(value = "type") Integer type,
+                                  @RequestParam(value = "pages") Integer pages) throws Exception {
+        for (int i = pages; i > 1; i--) {
+            log.info("正在爬取第{}页数据==================================", i);
+            this.crawlerVideos(type, i);
+        }
 
-    @GetMapping(value = "/crawler")
-    public ResponseObj crawlerVideos(@RequestParam(value = "type") Integer type,
-                                     @RequestParam(value = "page_no") Integer page_no,
-                                     @RequestParam(value = "page_size") Integer page_size) throws Exception {
+        return ResponseObj.SUCEESS(null);
+    }
+
+    private ResponseObj crawlerVideos(@RequestParam(value = "type") Integer type,
+                                      @RequestParam(value = "page_no") Integer page_no) throws Exception {
+        String root_url = VideoUtil.ROOT_URL_ADDRESS;
         type = (type > 1) ? type : 1;
         page_no = (page_no > 1) ? page_no : 1;
-        String url_address = ROOT_URL_ADDRESS + "/type/" + type + "/" + page_no + ".html";
+        String url_address = root_url + "/type/" + type + "/" + page_no + ".html";
 
         Document document = Jsoup.connect(url_address).userAgent("iOS/12.0.1").get();
         Elements elements = document.select("div.movie-item");
@@ -70,11 +79,11 @@ public class VideoController {
             String update = otherinfo_element.text();
             String hdtag = hdtag_element.text();
 
-            if (detailHref.startsWith(ROOT_URL_ADDRESS) == false) {
+            if (detailHref.startsWith(root_url) == false) {
                 if (detailHref.startsWith("/")) {
-                    detailHref = ROOT_URL_ADDRESS + detailHref;
+                    detailHref = root_url + detailHref;
                 } else {
-                    detailHref = ROOT_URL_ADDRESS + "/" + detailHref;
+                    detailHref = root_url + "/" + detailHref;
                 }
             }
 
@@ -88,19 +97,21 @@ public class VideoController {
             video.setVideoHdtag(hdtag);
 
             log.info("title={}, detail={}, img={}, update={}, hdtag={}", title, detailHref, img, update, hdtag);
-            if (this.saveVideoModel(video)) {
-                videoArrayList.add(video);
-            }
+            videoArrayList.add(video);
         }
+
+        videoService.saveAll(videoArrayList);
 
         return ResponseObj.SUCEESS(videoArrayList);
 
     }
 
-    /*添加、保存视频*/
-    public boolean saveVideoModel(Video newVideo) {
-        Video video = videoService.saveVideoModel(newVideo);
-        return (video != null);
-    }
+//    @GetMapping(value = "")
+//    private ResponseObj crawlerVideos(@RequestParam(value = "type") Integer type,
+//                                      @RequestParam(value = "page_no") Integer page_no,
+//                                      @RequestParam(value = "page_size") Integer page_size) {
+//
+//    }
+
 
 }

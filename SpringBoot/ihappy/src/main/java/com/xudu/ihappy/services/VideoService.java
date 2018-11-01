@@ -29,5 +29,7 @@ public class VideoService {
         return videoModelRepository.save(newVideo);
     }
 
-
+    public List<Video> saveAll(List<Video> all) {
+        return videoModelRepository.saveAll(all);
+    }
 }

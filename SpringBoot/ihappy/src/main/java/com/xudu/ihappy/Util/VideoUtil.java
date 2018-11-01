@@ -6,6 +6,9 @@ import java.security.MessageDigest;
 
 public class VideoUtil {
 
+    // 视频根路径
+    public final static String ROOT_URL_ADDRESS = "http://www.74zu.com";
+
     public static String getMD5Str(String str) throws Exception {
         try {
             // 生成一个MD5加密计算摘要

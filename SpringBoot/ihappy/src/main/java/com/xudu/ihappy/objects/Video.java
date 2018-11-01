@@ -38,7 +38,7 @@ public class Video {
 
     private String videoNation;
 
-    private String videoUpdateStatus;
+    private String videoPublicDate;
 
     private String videoScore;
 
