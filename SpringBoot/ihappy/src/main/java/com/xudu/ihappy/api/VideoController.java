@@ -5,7 +5,6 @@ import com.xudu.ihappy.Util.VideoUtil;
 import com.xudu.ihappy.api.responseobj.ResponseObj;
 import com.xudu.ihappy.api.responseobj.VideoResponseObj;
 import com.xudu.ihappy.objects.Video;
-import com.xudu.ihappy.services.EpisodeService;
 import com.xudu.ihappy.services.VideoService;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;

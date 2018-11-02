@@ -38,7 +38,7 @@ public class VideoService {
             @Override
             public Predicate toPredicate(Root<Video> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
                 ArrayList<Predicate> predicateArrayList = new ArrayList<Predicate>();
-                predicateArrayList.add(criteriaBuilder.isNotNull(root.get("md5key")));
+                predicateArrayList.add(criteriaBuilder.equal(root.get("videoType"), type));
                 return criteriaBuilder.and(predicateArrayList.toArray(new Predicate[predicateArrayList.size()]));
             }
         };
