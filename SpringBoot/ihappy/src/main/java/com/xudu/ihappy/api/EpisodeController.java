@@ -1,7 +1,9 @@
 package com.xudu.ihappy.api;
 
 import com.xudu.ihappy.Util.VideoUtil;
+import com.xudu.ihappy.api.responseobj.EpisodeResponseObj;
 import com.xudu.ihappy.api.responseobj.ResponseObj;
+import com.xudu.ihappy.api.responseobj.VideoResponseObj;
 import com.xudu.ihappy.objects.Episode;
 import com.xudu.ihappy.objects.Video;
 import com.xudu.ihappy.services.EpisodeService;
@@ -11,10 +13,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +27,8 @@ public class EpisodeController {
     @Autowired
     private EpisodeService episodeService;
 
-    @GetMapping(value = "all")
+    @GetMapping(value = "/query")
+    @PostMapping(value = "/query")
     /* 根据md5key进行查询
      * 如果数据库不存在视频，直接返回错误码
      * 如果存在视频，则开始抓取详情信息，如果详情信息有变化，则刷新视频基本信息
@@ -41,11 +41,11 @@ public class EpisodeController {
             if (video == null) {
                 return ResponseObj.RESULE_DATA_NONE();
             } else {
-                List<Episode> episodeGroups = this.crawlerVideoDetail(video);
-                return ResponseObj.SUCEESS(episodeGroups);
+                episodeList = this.crawlerVideoDetail(video);
             }
         }
-        return ResponseObj.SUCEESS(episodeList);
+        ArrayList<EpisodeResponseObj> episodeResponseObjArrayList = this.convertEpisodeListToEpisodeResponseObjList(episodeList);
+        return ResponseObj.SUCEESS(episodeResponseObjArrayList);
     }
 
     public Episode findByEkey(String ekey) {
@@ -138,11 +138,21 @@ public class EpisodeController {
                 episode.setSort(j);
                 episodeArrayList.add(episode);
 
-//                episodeService.save(episode);
+                episodeService.save(episode);
             }
         }
 
-        episodeService.saveAll(episodeArrayList);
+//        episodeService.saveAll(episodeArrayList);
         return episodeArrayList;
+    }
+
+
+    /*转成api需要的字段输出*/
+    private ArrayList<EpisodeResponseObj> convertEpisodeListToEpisodeResponseObjList(List<Episode> episodeArrayList) {
+        ArrayList<EpisodeResponseObj> episodeResponseObjArrayList = new ArrayList<>();
+        for (Episode episode : episodeArrayList) {
+            episodeResponseObjArrayList.add(episode.toEpisodeResponseObj());
+        }
+        return episodeResponseObjArrayList;
     }
 }

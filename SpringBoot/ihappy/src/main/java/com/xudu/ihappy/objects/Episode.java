@@ -1,5 +1,6 @@
 package com.xudu.ihappy.objects;
 
+import com.xudu.ihappy.api.responseobj.EpisodeResponseObj;
 import lombok.Data;
 
 import javax.persistence.Entity;
@@ -19,4 +20,8 @@ public class Episode {
     private String episodeHref;
     private Integer sort;
     private Integer section;
+
+    public EpisodeResponseObj toEpisodeResponseObj() {
+        return new EpisodeResponseObj(this);
+    }
 }

@@ -1,5 +1,6 @@
 package com.xudu.ihappy.objects;
 
+import com.xudu.ihappy.api.responseobj.VideoResponseObj;
 import lombok.Data;
 
 import javax.persistence.Entity;
@@ -43,4 +44,8 @@ public class Video {
     private String videoScore;
 
     private String videoSummary;
+
+    public VideoResponseObj toVideoResponseObj(){
+        return new VideoResponseObj(this);
+    }
 }

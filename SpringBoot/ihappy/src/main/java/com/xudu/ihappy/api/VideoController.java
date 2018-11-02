@@ -3,6 +3,7 @@ package com.xudu.ihappy.api;
 
 import com.xudu.ihappy.Util.VideoUtil;
 import com.xudu.ihappy.api.responseobj.ResponseObj;
+import com.xudu.ihappy.api.responseobj.VideoResponseObj;
 import com.xudu.ihappy.objects.Video;
 import com.xudu.ihappy.services.EpisodeService;
 import com.xudu.ihappy.services.VideoService;
@@ -12,6 +13,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,13 +29,26 @@ public class VideoController {
 
     @Autowired
     private VideoService videoService;
-    private EpisodeService episodeService;
 
-    /*根据类型返回数组*/
-    @GetMapping(value = "/videolist")
-    public ResponseObj findAllWithVideoType(@RequestParam(value = "type") Integer type) {
-        List<Video> videoList = videoService.findAllWithVideoType(type);
-        return ResponseObj.SUCEESS(videoList);
+//    /*根据类型返回数组*/
+//    @GetMapping(value = "/videolist")
+//    public ResponseObj findAllWithVideoType(@RequestParam(value = "type") Integer type) {
+//        List<Video> videoList = videoService.findAllWithVideoType(type);
+//        List<VideoResponseObj> videoResponseObjArrayList = this.convertVideoListToVideoResponseObjList(videoList);
+//        return ResponseObj.SUCEESS(videoResponseObjArrayList);
+//    }
+
+    /*分页查询列表*/
+    @GetMapping(value = "/list")
+    public ResponseObj findAllWithVideoTypeAndPage(@RequestParam(value = "type") Integer type,
+                                                   @RequestParam(value = "page_no") Integer page,
+                                                   @RequestParam(value = "page_size") Integer pageSize) {
+        page = (page>1)?page:1;
+        pageSize = (pageSize > 1)?pageSize:1;
+        Page<Video> videoPage = videoService.findAllWithVideoTypeAndPage(type, page, pageSize);
+
+        List<Video> videoList = videoPage.getContent();
+        return ResponseObj.SUCEESS(this.convertVideoListToVideoResponseObjList(videoList));
     }
 
     /*根据md5key搜索视频*/
@@ -56,6 +71,15 @@ public class VideoController {
         return ResponseObj.SUCEESS(null);
     }
 
+//    @GetMapping(value = "query")
+//    private ResponseObj query(@RequestParam(value = "type") Integer type,
+//                              @RequestParam(value = "page_no") Integer page_no,
+//                              @RequestParam(value = "page_size") Integer page_size) {
+//
+//    }
+
+
+
     private ResponseObj crawlerVideos(@RequestParam(value = "type") Integer type,
                                       @RequestParam(value = "page_no") Integer page_no) throws Exception {
         String root_url = VideoUtil.ROOT_URL_ADDRESS;
@@ -67,6 +91,7 @@ public class VideoController {
         Elements elements = document.select("div.movie-item");
 
         ArrayList<Video> videoArrayList = new ArrayList<>();
+
         for (Element element : elements) {
             Element moviename_element = element.select("a.movie-name").first();
             Element img_element = element.select("img").first();
@@ -102,16 +127,16 @@ public class VideoController {
 
         videoService.saveAll(videoArrayList);
 
-        return ResponseObj.SUCEESS(videoArrayList);
-
+        List<VideoResponseObj> videoResponseObjArrayList = this.convertVideoListToVideoResponseObjList(videoArrayList);
+        return ResponseObj.SUCEESS(videoResponseObjArrayList);
     }
 
-//    @GetMapping(value = "")
-//    private ResponseObj crawlerVideos(@RequestParam(value = "type") Integer type,
-//                                      @RequestParam(value = "page_no") Integer page_no,
-//                                      @RequestParam(value = "page_size") Integer page_size) {
-//
-//    }
 
-
+    private List<VideoResponseObj> convertVideoListToVideoResponseObjList(List<Video> videoArrayList) {
+        ArrayList<VideoResponseObj> videoResponseObjArrayList = new ArrayList<>();
+        for (Video video : videoArrayList) {
+            videoResponseObjArrayList.add(video.toVideoResponseObj());
+        }
+        return videoResponseObjArrayList;
+    }
 }
